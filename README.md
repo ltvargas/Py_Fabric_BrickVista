@@ -30,7 +30,7 @@ Construir una plataforma analítica en Microsoft Fabric para integrar datos de v
 - **Pricing Dashboard**: Precio por m², comparativo por ciudad y tipo de propiedad
 - **Marketing ROI**: Leads por campaña
 - **Inventario**: Porcentaje de estados de propiedad
-- **Generales** : Cantidad de clientes, propiedades, campañias, proyectos
+- **Generales** : Cantidad de clientes, propiedades, campañas, proyectos
 
 ## 💡 Lecciones aprendidas
 

@@ -1,0 +1,683 @@
+{
+    "name": "PIPE_DATAPATH_ORQUESTADOR_PROJECT_LV_001",
+    "objectId": "539ffc06-4f3f-46ce-a513-997e5b6bd42c",
+    "properties": {
+        "activities": [
+            {
+                "name": "IP_INGESTA",
+                "type": "InvokePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "waitOnCompletion": true,
+                    "operationType": "InvokeFabricPipeline",
+                    "pipelineId": "4cda7f04-ef7b-48c9-ab25-cfe7f85a4e18",
+                    "workspaceId": "dd5e4b2e-7d9c-42e9-a39b-119a76327848"
+                },
+                "externalReferences": {
+                    "connection": "7ebf6d0e-5478-4d20-8ab9-0a47a9efa9d3"
+                }
+            },
+            {
+                "name": "NB_ALMACENAMIENTOS_TRANFORMACION",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "IP_INGESTA",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "b88e0aaf-3fbc-4dbf-8b7c-7ed5acc71b6c",
+                    "workspaceId": "dd5e4b2e-7d9c-42e9-a39b-119a76327848"
+                }
+            },
+            {
+                "name": "IMPORT_GOLD_WAREHOUSE",
+                "type": "InvokePipeline",
+                "dependsOn": [
+                    {
+                        "activity": "NB_ALMACENAMIENTOS_TRANFORMACION",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "waitOnCompletion": true,
+                    "operationType": "InvokeFabricPipeline",
+                    "pipelineId": "f57dd32b-61cc-4fa9-abc6-fe76e6fd69eb",
+                    "workspaceId": "dd5e4b2e-7d9c-42e9-a39b-119a76327848",
+                    "parameters": {
+                        "cw_items_svf": [
+                            {
+                                "source": {
+                                    "table": "dim_brokers"
+                                },
+                                "destination": {
+                                    "schema": "ventas",
+                                    "table": "dim_brokers"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_broker",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_broker",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "nombre",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "nombre",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "region",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "region",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "email",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "email",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "source": {
+                                    "table": "dim_campanias"
+                                },
+                                "destination": {
+                                    "schema": "marketing",
+                                    "table": "dim_campanias"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_campania",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_campania",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "canal",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "canal",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "nombre",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "nombre",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "fecha_emision",
+                                                    "type": "Date",
+                                                    "physicalType": "date"
+                                                },
+                                                "sink": {
+                                                    "name": "fecha_emision",
+                                                    "physicalType": "date"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "fecha_fin",
+                                                    "type": "Date",
+                                                    "physicalType": "date"
+                                                },
+                                                "sink": {
+                                                    "name": "fecha_fin",
+                                                    "physicalType": "date"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "presupuesto",
+                                                    "type": "Double",
+                                                    "physicalType": "double"
+                                                },
+                                                "sink": {
+                                                    "name": "presupuesto",
+                                                    "physicalType": "float"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "source": {
+                                    "table": "dim_clientes"
+                                },
+                                "destination": {
+                                    "schema": "ventas",
+                                    "table": "dim_clientes"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_cliente",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_cliente",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "nombre",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "nombre",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "apellido",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "apellido",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "email",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "email",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "region",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "region",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "nombre_completo",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "nombre_completo",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "numero_compras",
+                                                    "type": "Int64",
+                                                    "physicalType": "long"
+                                                },
+                                                "sink": {
+                                                    "name": "numero_compras",
+                                                    "physicalType": "bigint"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "source": {
+                                    "table": "dim_propiedades"
+                                },
+                                "destination": {
+                                    "schema": "proyectos",
+                                    "table": "dim_propiedades"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_propiedad",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_propiedad",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_proyecto",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_proyecto",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "tipo",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "tipo",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "tamanio_m2",
+                                                    "type": "Double",
+                                                    "physicalType": "double"
+                                                },
+                                                "sink": {
+                                                    "name": "tamanio_m2",
+                                                    "physicalType": "float"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "habitaciones",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "habitaciones",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "banios",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "banios",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "precio",
+                                                    "type": "Double",
+                                                    "physicalType": "double"
+                                                },
+                                                "sink": {
+                                                    "name": "precio",
+                                                    "physicalType": "float"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "estado_propiedad",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "estado_propiedad",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "nombre_proyecto",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "nombre_proyecto",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "ciudad",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "ciudad",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "region",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "region",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "fecha_lanzamiento",
+                                                    "type": "Date",
+                                                    "physicalType": "date"
+                                                },
+                                                "sink": {
+                                                    "name": "fecha_lanzamiento",
+                                                    "physicalType": "date"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "estado_proyecto",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "estado_proyecto",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "source": {
+                                    "table": "fact_interesados"
+                                },
+                                "destination": {
+                                    "schema": "marketing",
+                                    "table": "fact_interesados"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_interesado",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_interesado",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_cliente",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_cliente",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_propiedad",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_propiedad",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_campania",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_campania",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "fecha_emision",
+                                                    "type": "Date",
+                                                    "physicalType": "date"
+                                                },
+                                                "sink": {
+                                                    "name": "fecha_emision",
+                                                    "physicalType": "date"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "medio",
+                                                    "type": "String",
+                                                    "physicalType": "string"
+                                                },
+                                                "sink": {
+                                                    "name": "medio",
+                                                    "physicalType": "varchar",
+                                                    "length": "8000"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "source": {
+                                    "table": "fact_ventas"
+                                },
+                                "destination": {
+                                    "schema": "ventas",
+                                    "table": "fact_ventas"
+                                },
+                                "copyActivity": {
+                                    "translator": {
+                                        "type": "TabularTranslator",
+                                        "mappings": [
+                                            {
+                                                "source": {
+                                                    "name": "id_venta",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_venta",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_propiedad",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_propiedad",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_cliente",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_cliente",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "id_broker",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "id_broker",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "fecha_venta",
+                                                    "type": "Date",
+                                                    "physicalType": "date"
+                                                },
+                                                "sink": {
+                                                    "name": "fecha_venta",
+                                                    "physicalType": "date"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "precio_venta",
+                                                    "type": "Double",
+                                                    "physicalType": "double"
+                                                },
+                                                "sink": {
+                                                    "name": "precio_venta",
+                                                    "physicalType": "float"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "anio_venta",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "anio_venta",
+                                                    "physicalType": "int"
+                                                }
+                                            },
+                                            {
+                                                "source": {
+                                                    "name": "mes_venta",
+                                                    "type": "Int32",
+                                                    "physicalType": "integer"
+                                                },
+                                                "sink": {
+                                                    "name": "mes_venta",
+                                                    "physicalType": "int"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "externalReferences": {
+                    "connection": "7ebf6d0e-5478-4d20-8ab9-0a47a9efa9d3"
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "b84dfbd5-4dab-4c12-9285-e8ceb7c4605f",
+        "lastPublishTime": "2025-06-30T06:27:48Z"
+    }
+}

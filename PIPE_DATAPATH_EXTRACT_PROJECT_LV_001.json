@@ -1,0 +1,93 @@
+{
+    "name": "PIPE_DATAPATH_EXTRACT_PROJECT_LV_001",
+    "objectId": "4cda7f04-ef7b-48c9-ab25-cfe7f85a4e18",
+    "properties": {
+        "activities": [
+            {
+                "name": "CP_EXTRACT_PROJECT_LV_001",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "AzureBlobFSReadSettings",
+                            "recursive": true,
+                            "wildcardFolderPath": "raw_data",
+                            "wildcardFileName": "*.csv",
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings"
+                        },
+                        "datasetSettings": {
+                            "annotations": [],
+                            "type": "DelimitedText",
+                            "typeProperties": {
+                                "location": {
+                                    "type": "AzureBlobFSLocation",
+                                    "fileSystem": "realstate"
+                                },
+                                "columnDelimiter": ",",
+                                "escapeChar": "\\",
+                                "firstRowAsHeader": true,
+                                "quoteChar": "\""
+                            },
+                            "schema": [],
+                            "externalReferences": {
+                                "connection": "3a0368c8-cbac-4172-b5f1-f801fd4725e3"
+                            }
+                        }
+                    },
+                    "sink": {
+                        "type": "DelimitedTextSink",
+                        "storeSettings": {
+                            "type": "LakehouseWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextWriteSettings",
+                            "fileExtension": ".txt"
+                        },
+                        "datasetSettings": {
+                            "annotations": [],
+                            "linkedService": {
+                                "name": "LKH_DATAPATH_PROJECT_LV_001",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "Lakehouse",
+                                    "typeProperties": {
+                                        "workspaceId": "dd5e4b2e-7d9c-42e9-a39b-119a76327848",
+                                        "artifactId": "396ddd9b-0851-4ab0-b0cc-a984f9fac8a8",
+                                        "rootFolder": "Files"
+                                    }
+                                }
+                            },
+                            "type": "DelimitedText",
+                            "typeProperties": {
+                                "location": {
+                                    "type": "LakehouseLocation",
+                                    "folderPath": "raw"
+                                },
+                                "columnDelimiter": ",",
+                                "escapeChar": "\\",
+                                "firstRowAsHeader": true,
+                                "quoteChar": "\""
+                            },
+                            "schema": []
+                        }
+                    },
+                    "enableStaging": false
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "b84dfbd5-4dab-4c12-9285-e8ceb7c4605f",
+        "lastPublishTime": "2025-06-29T17:26:01Z"
+    }
+}
